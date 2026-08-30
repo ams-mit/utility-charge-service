@@ -1,0 +1,68 @@
+spring:
+  application:
+    name: utility-charge-service
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3307/utility_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        default_batch_fetch_size: 20
+
+  sql:
+    init:
+      mode: never
+
+server:
+  port: ${SERVER_PORT:8082}
+  servlet:
+    context-path: /
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+  info:
+    app:
+      name: utility-charge-service
+      version: 1.0.0
+      description: AMS Group 3 - Utility Charge Recording and Calculation
+
+ams:
+  jwt:
+    secret: ${JWT_SECRET:dev-secret-key-replace-in-production-must-be-256-bits-minimum}
+  service:
+    billing-url: ${BILLING_SERVICE_URL:http://localhost:8081}
+
+logging:
+  level:
+    com.ams.utility: DEBUG
+    org.springframework.security: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

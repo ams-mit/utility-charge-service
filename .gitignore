@@ -1,0 +1,20 @@
+# Maven
+target/
+*.jar
+*.war
+*.class
+*.log
+
+# Environment — NEVER commit
+.env
+*.env
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
