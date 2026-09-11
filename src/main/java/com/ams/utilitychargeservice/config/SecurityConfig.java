@@ -25,8 +25,7 @@ public class SecurityConfig {
             "/actuator/info",
             "/swagger-ui.html",
             "/swagger-ui/**",
-            "/v3/api-docs/**",
-            "/api/v1/internal/**"   // Secured by network isolation, not JWT
+            "/v3/api-docs/**"
     };
 
     @Bean
@@ -36,6 +35,7 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_PATHS).permitAll()
+                        .requestMatchers("/api/v1/internal/**").hasRole("SERVICE")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

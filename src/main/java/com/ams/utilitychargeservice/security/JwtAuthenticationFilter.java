@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -34,17 +35,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
             String userId = jwtTokenProvider.extractUserId(token);
+            String type = jwtTokenProvider.extractType(token);
             List<String> roles = jwtTokenProvider.extractRoles(token);
 
-            List<SimpleGrantedAuthority> authorities = roles.stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                    .toList();
+            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+            // Add user roles
+            roles.forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
+
+            // Add SERVICE role if type is service
+            if ("service".equals(type)) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_SERVICE"));
+            }
 
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(userId, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(auth);
-            log.debug("JWT authenticated: userId={}, roles={}", userId, roles);
+            log.debug("JWT authenticated: userId={}, type={}, roles={}", userId, type, roles);
         }
 
         filterChain.doFilter(request, response);

@@ -5,25 +5,30 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.*;
+import java.util.Base64;
 
 @Slf4j
 @Component
 public class JwtTokenProvider {
 
-    private final SecretKey signingKey;
+    private final PublicKey gatewayPublicKey;
+    private final PrivateKey servicePrivateKey;
 
-    public JwtTokenProvider(@Value("${ams.jwt.secret}") String jwtSecret) {
-        // Key must be at least 256 bits for HS256
-        this.signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    public JwtTokenProvider(
+            @Value("${ams.security.gateway-public-key}") String gatewayPublicKeyStr,
+            @Value("${ams.security.service-private-key}") String servicePrivateKeyStr) {
+        this.gatewayPublicKey = parsePublicKey(gatewayPublicKeyStr);
+        this.servicePrivateKey = parsePrivateKey(servicePrivateKeyStr);
     }
 
     public boolean validateToken(String token) {
@@ -32,18 +37,18 @@ public class JwtTokenProvider {
             return true;
         } catch (ExpiredJwtException e) {
             log.warn("JWT token expired");
-        } catch (SecurityException | MalformedJwtException e) {
-            log.warn("JWT token invalid signature or malformed");
-        } catch (UnsupportedJwtException e) {
-            log.warn("JWT token unsupported");
-        } catch (IllegalArgumentException e) {
-            log.warn("JWT token claims empty");
+        } catch (Exception e) {
+            log.warn("JWT token invalid: {}", e.getMessage());
         }
         return false;
     }
 
     public String extractUserId(String token) {
         return parseClaims(token).getSubject();
+    }
+
+    public String extractType(String token) {
+        return (String) parseClaims(token).get("type");
     }
 
     @SuppressWarnings("unchecked")
@@ -57,9 +62,42 @@ public class JwtTokenProvider {
 
     private Claims parseClaims(String token) {
         return Jwts.parser()
-                .verifyWith(signingKey)
+                .verifyWith(gatewayPublicKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    private PublicKey parsePublicKey(String keyStr) {
+        try {
+            log.info("Parsing Gateway Public Key. Input length: {}", keyStr == null ? 0 : keyStr.length());
+            String cleanKey = keyStr
+                    .replace("-----BEGIN PUBLIC KEY-----", "")
+                    .replace("-----END PUBLIC KEY-----", "")
+                    .replaceAll("\\s", "");
+            log.info("Cleaned key length: {}", cleanKey.length());
+            byte[] keyBytes = Base64.getDecoder().decode(cleanKey);
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            return kf.generatePublic(spec);
+        } catch (Exception e) {
+            log.error("Error parsing Gateway Public Key: {}", e.getMessage());
+            throw new RuntimeException("Failed to parse Gateway Public Key", e);
+        }
+    }
+
+    private PrivateKey parsePrivateKey(String keyStr) {
+        try {
+            String cleanKey = keyStr
+                    .replace("-----BEGIN PRIVATE KEY-----", "")
+                    .replace("-----END PRIVATE KEY-----", "")
+                    .replaceAll("\\s", "");
+            byte[] keyBytes = Base64.getDecoder().decode(cleanKey);
+            PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            return kf.generatePrivate(spec);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse Service Private Key", e);
+        }
     }
 }
