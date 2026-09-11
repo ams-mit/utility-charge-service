@@ -1,0 +1,17 @@
+ams:
+  security:
+    gateway-public-key: "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtyeNtuzV3cfztwLWvwP2G7FTOtsvUPdqOAYZfNTc3DlRMMKfzI/bxb/I8PQsq7Q1S6973phq0ur+L/zr6ntL5On6dU/m7Jh43EWeaipOkPJ8GpMfkuBvVfiXYuYCg7ywBFQXUYsSjmw3P6OLzDQRmdEVkbFOQDTCcLODAvRihwKeEyDZIQL+bmYZF1Uyvd31rJ7FR7yP3AFaLb5KBPnWknwtLPy9jyvSyTxyTiPPxW+Yj+zzxFHE7wTLhNmiKJ/Nm55cdwTufCfu5FjGLacrIY9AuqRYAJ/pOohggckie6p8WLK88V1KVZOq/+ci8L0afYj3gEFNM9FZuh+wgJNmlwIDAQAB-----END PUBLIC KEY-----"
+    service-private-key: "-----BEGIN PRIVATE KEY----------BEGIN PRIVATE KEY-----MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDasFa2EBRGoI9vjJRFYoKTyHEegJUBB4JRcHxlkxQk0BoTms1cPZZmbw6QnHRbL+/9ZiIHo8Hy2RPy9GYiFNs3gaz6Y4ZPhlubh2EBXU9zo3OvQcj+K0+Llj/7AcnlBRQGhBxfU7PAQebFuhUlPejhZt7B0NSWFDVKUXtV6x5bIXkwFJ9z8a3WRfNSISqNchuo9CNLpIVAOUpqnT/iSkZmFVUspsCSKo/yvMkTFlZhKMdUVNsly3XVkWqalFp+DM6WHW9qEBv4FGaP8QG+iYmnrGMelvD9bkthMdFX0KFw1Ihr6aRk9ce7BdJQ6MoXp1lSvxobG5bTTCXiKEZUAoD/AgMBAAECggEAQ9+sIfiumlcV/ZynnjtbZKu29C0bUgT3HPipG0uBWoWeOkx3BXR1/Bfm8NomQPEJbt/mmvFn7kwSpXrWQiiv+zPLsLD4DDGauBRV9rrzwGPQMWpdDAn8N8or1GdzNpoTY4xYU/viE79AdUjybCshXufzJjt+54+hFI5ilcGSG90eYuqIFhP+BnhXs0y9iVvBtnMdzvIZ6JgfvQcVy6jnWz65GwCRoUdp3Dmpp2/qW1J8arpBNWrHFGBPcE/hHSaq6RwWVLvz50SvkOyGN3QoA7SRAJcWmwoxckLuS96wAlAW7mKnlDljTnex85H2NUicgsW+FcPlJHfSs6V00Jn1EQKBgQDu37wSBpF1JESO3hScTLIfAagBVo2B394OXJzcw+va/gW3zoyhoWmOXTLz9Z1t8Kur61tZAbqOVY9r9fxQl0Z7EYFtAD/YXQvgYFGOjH3Dv1FMQ3q1OM1QkHxBYJQo4OclosVKwL9P6P7sNr+8Huw2PDAEdRw4XzkxeT8zyCxd8QKBgQDqXiDZFcDHIoEvjCONRrsT3YM3lc3y1hbTtFsIJVn1LJ4bHXQIGWldHLI9kBVWrMBLABOkt89gcmqluSYQMaZjoWsNO6bckdtwGMDh19u3AgRglmDkdy9hkm/EedapBGtnWS2jjXu9UHgtfcvfZSC7TScSVP1gEoj7RpS0Wpqd7wKBgQCKnU43b5RM06Ts+rYfFOpvz7g8PouTB+OFlfx4p0BgLfQHe1ZkHJRyRmbg5nBaccRM2SCC/9vP6Jp3XaDy6zW9CKWAKRrjZOsVYw8wlxoL0yNMDARS0QljbNSN44tWRVwcnN27ySm7J0t2qzaL5a3QsxByJbsggzFfIiqo08nbIQKBgQDkrK0uQ2xSoJceFoWFzjKxAlyKus81FrE1JXAA9bjdYQhveoCBepH0uRAsw04ewPXq+Asyl+put5TZWFsMR/WKlrBGPCLmaiaLLIvekGigGwa8W1307Vm8wU3ujdbmGRrWvwup3l2S7VYlRO3MbfbO6kuqNmT2/X7MdiSYCSN93wKBgGxSD5cVRfcmF8bMcgDRUjIAtPGmcZFQ6NuEElJQp4ydzMGp32Jym/pxnCsMTbI2c2u176TnHaz7XeeX8L+AsTM5bcZslob/D6tXY1L8Sgy5a7kiCidOJIxYTVhKzP5g0d8HyCWtWiyib0vhGf7SC/8P+7g8qywFLpOw1mS+G1s4-----END PRIVATE KEY----------END PRIVATE KEY-----"
+    jwt-algorithm: RS256
+    service-jwt-expires-in: 5m
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true

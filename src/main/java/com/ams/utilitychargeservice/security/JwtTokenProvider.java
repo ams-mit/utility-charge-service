@@ -5,6 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,12 +22,17 @@ import java.util.Base64;
 @Component
 public class JwtTokenProvider {
 
-    private final PublicKey gatewayPublicKey;
-    private final PrivateKey servicePrivateKey;
+    @Value("${ams.security.gateway-public-key}")
+    private String gatewayPublicKeyStr;
 
-    public JwtTokenProvider(
-            @Value("${ams.security.gateway-public-key}") String gatewayPublicKeyStr,
-            @Value("${ams.security.service-private-key}") String servicePrivateKeyStr) {
+    @Value("${ams.security.service-private-key}")
+    private String servicePrivateKeyStr;
+
+    private PublicKey gatewayPublicKey;
+    private PrivateKey servicePrivateKey;
+
+    @PostConstruct
+    public void init() {
         this.gatewayPublicKey = parsePublicKey(gatewayPublicKeyStr);
         this.servicePrivateKey = parsePrivateKey(servicePrivateKeyStr);
     }
