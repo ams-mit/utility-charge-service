@@ -149,4 +149,14 @@ public class JwtTokenProvider {
             throw new RuntimeException("Failed to parse Service Private Key", e);
         }
     }
+    public String generateServiceJwt() {
+        return Jwts.builder()
+                .subject("utility-charge-service")
+                .claim("type", "service")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 5L * 60 * 1000)) // 5 minutes
+                .signWith(servicePrivateKey, Jwts.SIG.RS256)
+                .compact();
+    }
+
 }
