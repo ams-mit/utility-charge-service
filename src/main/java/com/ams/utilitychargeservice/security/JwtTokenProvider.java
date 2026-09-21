@@ -30,11 +30,38 @@ public class JwtTokenProvider {
 
     private PublicKey gatewayPublicKey;
     private PrivateKey servicePrivateKey;
+    private PublicKey servicePublicKey; // Added for dev-mode token validation
+
+    public PublicKey getGatewayPublicKey() {
+        return gatewayPublicKey;
+    }
+
+    public PrivateKey getServicePrivateKey() {
+        return servicePrivateKey;
+    }
 
     @PostConstruct
     public void init() {
         this.gatewayPublicKey = parsePublicKey(gatewayPublicKeyStr);
         this.servicePrivateKey = parsePrivateKey(servicePrivateKeyStr);
+        this.servicePublicKey = derivePublicKey(servicePrivateKey);
+    }
+
+    private PublicKey derivePublicKey(PrivateKey privateKey) {
+        try {
+            // For RSA, we can't simply "cast" but we can use the key factory
+            // or just parse the public key from an env var if available.
+            // Since we have the private key, we can extract the public modulus and exponent.
+            java.security.interfaces.RSAPrivateKey rsaPriv = (java.security.interfaces.RSAPrivateKey) privateKey;
+            java.security.spec.RSAPublicKeySpec spec = new java.security.spec.RSAPublicKeySpec(
+                    rsaPriv.getModulus(),
+                    java.math.BigInteger.valueOf(65537) // Standard RSA exponent
+            );
+            return KeyFactory.getInstance("RSA").generatePublic(spec);
+        } catch (Exception e) {
+            log.error("Failed to derive service public key: {}", e.getMessage());
+            return null;
+        }
     }
 
     public boolean validateToken(String token) {
@@ -67,11 +94,27 @@ public class JwtTokenProvider {
     }
 
     private Claims parseClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(gatewayPublicKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(gatewayPublicKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (Exception e) {
+            // Fallback for DevTokenController: try verifying with service public key
+            if (servicePublicKey != null) {
+                try {
+                    return Jwts.parser()
+                            .verifyWith(servicePublicKey)
+                            .build()
+                            .parseSignedClaims(token)
+                            .getPayload();
+                } catch (Exception ex) {
+                    log.debug("Token failed both gateway and service key verification");
+                }
+            }
+            throw e;
+        }
     }
 
     private PublicKey parsePublicKey(String keyStr) {

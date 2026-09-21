@@ -1,25 +1,26 @@
 package com.ams.utilitychargeservice.dto.response;
 
-import com.ams.utilitychargeservice.enums.RateStatus;
-import com.ams.utilitychargeservice.enums.UtilityType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.UUID;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.UUID;
 
-@Getter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UtilityRateResponse {
-
     private UUID id;
-    private UtilityType utilityType;
+    private String utilityType;
     private BigDecimal ratePerUnit;
     private String unitDescription;
     private LocalDate effectiveFrom;
-    private RateStatus status;
+    private String status;
     private Instant createdAt;
     private String createdBy;
 }
