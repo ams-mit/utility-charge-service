@@ -1,0 +1,26 @@
+/* Force the background to be black for the entire body and main containers */
+body, .swagger-ui, .swagger-ui .topbar {
+    background-color: #121212 !important;
+    color: #ffffff !important;
+}
+
+/* Invert the colors of the UI components to create a dark mode effect */
+.swagger-ui .swagger-ui {
+    filter: invert(90%) hue-rotate(180deg) !important;
+}
+
+/* Fix the top bar so it doesn't look weird after inversion */
+.swagger-ui .topbar {
+    filter: invert(100%) hue-rotate(180deg) !important;
+    background-color: #222 !important;
+}
+
+/* Ensure text in info section is white */
+.swagger-ui .info .title, .swagger-ui .info .description {
+    color: #ffffff !important;
+}
+
+/* Fix for inverted images or icons if any */
+.swagger-ui img {
+    filter: invert(100%) hue-rotate(180deg) !important;
+}

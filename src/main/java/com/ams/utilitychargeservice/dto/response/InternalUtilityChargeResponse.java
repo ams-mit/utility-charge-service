@@ -18,6 +18,6 @@ public class InternalUtilityChargeResponse {
     private UUID utilityChargeId;
     private UtilityType utilityType;
     private BigDecimal usageValue;
-    private BigDecimal ratePerUnit;
+    private BigDecimal ratePerUnitSnapshot;
     private BigDecimal calculatedAmount;
 }
