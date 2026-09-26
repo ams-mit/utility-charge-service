@@ -63,6 +63,7 @@ ams:
     service-private-key: ${SERVICE_JWT_PRIVATE_KEY}
     jwt-algorithm: ${JWT_ALGORITHM:RS256}
     service-jwt-expires-in: ${SERVICE_JWT_EXPIRES_IN:5m}
+  service:
     api-gateway-url: ${API_GATEWAY_URL:https://api-gateway.ams.com}
 
 logging:
