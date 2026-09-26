@@ -71,6 +71,10 @@ resource "azurerm_mysql_flexible_server" "mysql" {
     iops    = 396
   }
 
+  lifecycle {
+    ignore_changes = [zone]
+  }
+
   tags = azurerm_resource_group.main.tags
 }
 
