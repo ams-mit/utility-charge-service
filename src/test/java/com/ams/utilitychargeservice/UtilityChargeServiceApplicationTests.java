@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @org.springframework.test.context.ActiveProfiles("test")
+@org.springframework.test.context.ActiveProfiles("test")
 class UtilityChargeServiceApplicationTests {
 
     @Test
