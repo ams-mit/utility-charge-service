@@ -25,4 +25,9 @@ terraform/.terraform.lock.hcl
 terraform/tfplan
 terraform/*.tfstate
 terraform/*.tfstate.backup
-terraform/terraform.tfvars    # local var overrides — never commit
+terraform/*.tfvars
+terraform/*.tfvars.json
+terraform/override.tf
+terraform/override.tf.json
+terraform/*_override.tf
+terraform/*_override.tf.json
