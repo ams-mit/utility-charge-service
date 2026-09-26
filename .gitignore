@@ -18,3 +18,16 @@ target/
 # OS
 .DS_Store
 Thumbs.db
+
+# Terraform — never commit state or sensitive files
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/tfplan
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/*.tfvars
+terraform/*.tfvars.json
+terraform/override.tf
+terraform/override.tf.json
+terraform/*_override.tf
+terraform/*_override.tf.json
