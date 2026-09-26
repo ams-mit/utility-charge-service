@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @Slf4j
 @Component
-@Profile("dev")
+@Profile({"dev", "test"})
 public class MockBillingServiceClient implements BillingServiceClient {
 
     @Override
