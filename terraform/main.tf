@@ -211,9 +211,9 @@ resource "azurerm_container_app" "utility_service" {
         path      = "/actuator/health"
         port      = 8082
 
-        initial_delay    = 30
-        period_seconds   = 30
-        timeout_seconds  = 5
+        initial_delay           = 30
+        interval_seconds        = 30
+        timeout                 = 5
         failure_count_threshold = 3
       }
 
@@ -222,9 +222,8 @@ resource "azurerm_container_app" "utility_service" {
         path      = "/actuator/health"
         port      = 8082
 
-        initial_delay   = 20
-        period_seconds  = 10
-        timeout_seconds = 5
+        interval_seconds        = 10
+        timeout                 = 5
         failure_count_threshold = 3
       }
     }
