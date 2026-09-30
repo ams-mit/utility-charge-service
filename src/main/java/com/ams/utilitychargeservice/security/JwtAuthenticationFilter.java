@@ -28,10 +28,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.startsWith("/actuator/") ||
+        log.debug("Filtering request for path: {}", path);
+
+        if (path == null) return false;
+
+        return path.startsWith("/actuator") ||
                path.startsWith("/swagger-ui") ||
                path.startsWith("/v3/api-docs") ||
-               path.equals("/dev/token");
+               path.startsWith("/dev/token");
     }
 
     @Override
@@ -48,11 +52,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             List<String> roles = jwtTokenProvider.extractRoles(token);
 
             List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-
-            // Add user roles
             roles.forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
 
-            // Add SERVICE role if type is service
             if ("service".equals(type)) {
                 authorities.add(new SimpleGrantedAuthority("ROLE_SERVICE"));
             }
