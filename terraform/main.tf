@@ -173,7 +173,7 @@ resource "azurerm_container_app" "utility_service" {
         value = "utility-charge-service"
       }
       env {
-        name  = "SERVER_PORT"
+        name  = "PORT"
         value = "8082"
       }
       env {
