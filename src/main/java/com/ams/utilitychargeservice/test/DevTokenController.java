@@ -29,7 +29,6 @@ import java.util.Map;
 @Hidden
 @RestController
 @RequestMapping("/dev/token")
-@Profile("dev")
 @RequiredArgsConstructor
 public class DevTokenController {
 
