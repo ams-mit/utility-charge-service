@@ -8,7 +8,7 @@ Records water, electricity, gas, and parking usage per unit per billing period.
 Feeds utility charge data to `billing-payment-service` during invoice generation via internal API.
 
 ## Tech Stack
-Spring Boot 3.3 · Java 21 · MySQL · Spring Security · JWT · Springdoc OpenAPI
+Spring Boot 3.3 · Java 25 · MySQL · Spring Security · JWT · Springdoc OpenAPI
 
 ## Quick Start
 
